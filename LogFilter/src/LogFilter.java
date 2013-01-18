@@ -92,7 +92,7 @@ import javax.swing.JOptionPane;
                                }
                                
 
-                      //tereretrwe
+                
                                private static ArrayList<String> filterWithRegExExpressions(
                                                                ArrayList<String> logcatList, ArrayList<String> regExArray) {
                                                
@@ -144,4 +144,3 @@ import javax.swing.JOptionPane;
 
 
                 }
-
