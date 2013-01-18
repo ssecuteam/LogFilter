@@ -5,6 +5,6 @@ public class LogFilter {
 		System.out.println("test git druga linijka");	
 		System.out.println("test git trzecia linijka");	
 		System.out.println("test git czwarta linijka");	
-		
+		System.out.println("test moja git pi¹ta linijka");
   }
 }
