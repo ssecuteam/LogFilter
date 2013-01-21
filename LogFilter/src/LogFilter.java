@@ -15,61 +15,43 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 public class LogFilter {
-	static class cPliki {
+	static class cFiles {
 		static String fullLogFilename;
 		static String fullBlackListFilename;
 		static String fullRegExListFilename;
+		
+		final static byte LogFile=1;
+		final static byte BlackListFile=2;
+		final static byte RegExFile=3;
 	}
 	
 	
 	public LogFilter() throws IOException {
-	/*	BufferedReader logFileReader = new BufferedReader(new FileReader(fullLogFilename));
-
-		// wczytywanie blacklisty do programu
-		BufferedReader blackListReader = new BufferedReader(new FileReader(fullBlackListFilename));
-		ArrayList<String> blackListArray = new ArrayList<String>();
-		String blackListFileLine;
-		while ((blackListFileLine = blackListReader.readLine()) != null) {
-			blackListArray.add(blackListFileLine);
-			// System.out.println("line added to blacklist : "+blackListFileLine);
-		}
-		blackListReader.close();
-
-		// wczytywanie RegEx listy do programu
-		BufferedReader regExReader = new BufferedReader(new FileReader(fullRegExListFilename));
-		ArrayList<String> regExArray = new ArrayList<String>();
-		String regExFileLine;
-		while ((regExFileLine = regExReader.readLine()) != null) {
-			regExArray.add(regExFileLine);
-			System.out.println(regExFileLine);
-		}
-		regExReader.close();
-
 		// g³ówna metoda która usuwa duplikaty, sortuje i wycina zbêdna linie
-		removeDuplicatesAndUselessAndSortAll(fullLogFilename, logFileReader, blackListArray, regExArray);*/
+	//	removeDuplicatesAndUselessAndSortAll(fullLogFilename, logFileReader, blackListArray, regExArray);*/
 
 	}
 
-	static ArrayList<String> wczytaniePliku(String plik, byte rodzajPliku) throws IOException {
-		BufferedReader logFileReader=new BufferedReader(new FileReader(plik));
-		Set<String> logFileLinesSet = new LinkedHashSet<String>(100000); // maybe bigger
-																			
-		String currentLogfileLine;
-		//dodanie do Set usunie duplikaty
-		while ((currentLogfileLine = logFileReader.readLine()) != null) {
-			logFileLinesSet.add(currentLogfileLine);
-		}
-		logFileReader.close();
+	static ArrayList<String> wczytaniePliku(String file) throws IOException {
+		BufferedReader	fileReader=new BufferedReader(new FileReader(file));
+			Set<String> logFileLinesSet = new LinkedHashSet<String>(100000); // maybe bigger
+																				
+			String currentLogfileLine;
+			//dodanie do Set usunie duplikaty
+			while ((currentLogfileLine = fileReader.readLine()) != null) {
+				logFileLinesSet.add(currentLogfileLine);
+			}
+			fileReader.close();
+			
+			ArrayList<String> tempList = new ArrayList<String>();
+			for (String currLine : logFileLinesSet) {
+				tempList.add(currLine);
+			}
+			logFileLinesSet=null;
+			//sortowanie
+			Collections.sort(tempList);
 		
-		ArrayList<String> newAllLogcatLinesList = new ArrayList<String>();
-		for (String currLine : logFileLinesSet) {
-			newAllLogcatLinesList.add(currLine);
-		}
-		logFileLinesSet=null;
-		//sortowanie
-		Collections.sort(newAllLogcatLinesList);
-		
-		return newAllLogcatLinesList;
+		return tempList;
 	}
 	
 /*
