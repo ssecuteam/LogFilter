@@ -1,42 +1,36 @@
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.LayoutManager;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.ListModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
 class Okno extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// window size
 	private final static int WIDTH = 800;
 	private final static int LENGTH = 600;
@@ -44,7 +38,6 @@ class Okno extends JFrame {
 	// declaration of components
 	private JPanel mainJPanel, menuJPanel, buttonJPanel;
 	private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-	private JList logList, blackList, regularList, filteredList, processList;
 	private JButton btnOpenLog, btnOpenBlack, btnOpenRegular, btnFilter;
 	private JScrollPane temp_scroll = new JScrollPane();
 	private JViewport temp_view = new JViewport();
@@ -55,7 +48,7 @@ class Okno extends JFrame {
 	FilterBtnActionListener filterBtnActionListener=new FilterBtnActionListener();
 
 	public static void main(String[] args) {
-		Okno okno = new Okno();
+		new Okno();
 	}
 
 	public Okno() {
@@ -80,8 +73,7 @@ class Okno extends JFrame {
 		setPreferredSize(new Dimension(WIDTH, LENGTH));
 
 		// set Frame location
-		this.setLocation(screenSize.width / 2 - this.getSize().width / 2, screenSize.height / 2 - this.getSize().height
-				/ 2);
+		this.setLocation(screenSize.width / 2 - this.getSize().width / 2, screenSize.height / 2 - this.getSize().height	/ 2);
 
 		// creating panels
 		mainJPanel = new JPanel(new BorderLayout());
@@ -126,13 +118,6 @@ class Okno extends JFrame {
 		btnOpenRegular.addActionListener(loadBtnActionListener);
 		btnFilter.addActionListener(filterBtnActionListener);
 
-		// creating JLists
-	//	logList = new JList(); // log list
-	//	blackList = new JList(); // black list
-	//	regularList = new JList(); // regular expressions list
-	//	filteredList = new JList(); // results, filtered list
-	//	processList = new JList(); // device processes list
-
 		// setting menu components
 		buttonJPanel.add(btnOpenLog);
 		buttonJPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -144,16 +129,10 @@ class Okno extends JFrame {
 		// setting up panels
 		menuJPanel.add(buttonJPanel);
 
-		//tabbedPane.addTab("Logcat LOG", null, new JScrollPane(logList), null);
-	//	tabbedPane.addTab("Black List", null, new JScrollPane(blackList), null);
-	//	tabbedPane.addTab("Regular List", null, new JScrollPane(regularList), null);
-//		tabbedPane.addTab("Filtered List", null, new JScrollPane(filteredList), null);
-
 		mainJPanel.add(menuJPanel, BorderLayout.WEST);
 		mainJPanel.add(tabbedPane, BorderLayout.CENTER);
 		getContentPane().add(mainJPanel);
 
-		// this.add(new JPanel());
 		pack();
 		setVisible(true);
 	}
@@ -177,26 +156,23 @@ class Okno extends JFrame {
 		} else {
 			tabbedPane.addTab(tab_name, null, new JScrollPane(temp_list), null);
 		}
-		System.out.println(temp_list);
+	//	System.out.println(temp_list);
 		pack();
 		return temp_list;
 	}
 
-	// DO
-	// POPRAWIENIA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 	// getJListFromTabName returns JList object from tabbedPane
-	public JList getJListFromTabName(String tabName) {
-		JList temp_list = new JList();
+	public JList<String> getJListFromTabName(String tabName) {
+		JList<String> temp_list = new JList<String>();
 		
 		if (tabbedPane.getComponentCount() > 0) {
-			System.out.println("ilosc komp: " +tabbedPane.getComponentCount());
+		//	System.out.println("ilosc komp: " +tabbedPane.getComponentCount());
 			for (int i = 1; i <= tabbedPane.getComponentCount(); i++) {
 				System.out.println("title: " +tabbedPane.getTitleAt(i - 1) + ", tabName: " + tabName);
 				if (tabbedPane.getTitleAt(i - 1) == tabName) {
 					temp_scroll = (JScrollPane) tabbedPane.getComponentAt(i - 1);
 					temp_view = (JViewport) temp_scroll.getViewport();
-					temp_list = (JList) temp_view.getComponent(0);
+					temp_list = (JList<String>) temp_view.getComponent(0);
 					return temp_list;
 				} else {
 					System.out.println("There's no such tab in tabbedPane");
@@ -227,23 +203,22 @@ class Okno extends JFrame {
 				}
 			}
 		}
-
 	}
 	
 	class FilterBtnActionListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//Window window=new Window(new cFilterFrame(Okno.this));
 			cFilterFrame filterPanel=new cFilterFrame(Okno.this);
 			filterPanel.show();
-			///window.setAlwaysOnTop(true);
-			//window.show();
 		}
-		
 	}
 	
 	private class cFilterFrame extends JFrame implements ActionListener{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private JComboBox<String> logFile;
 		private JComboBox<String> blackListFile;
 		private JComboBox<String> regExFile;
@@ -274,10 +249,9 @@ class Okno extends JFrame {
 			choosePanel.add(regExFile);
 			
 			JButton btnFilter= new JButton("Filter");
-			//JButton btnCancel=new JButton("Cancel");
+		
 			buttonPanel.add(btnFilter);
 			btnFilter.addActionListener(this);
-		//	buttonPanel.add(btnCancel);
 			
 			add(choosePanel);
 			add(buttonPanel,BorderLayout.SOUTH);
@@ -298,42 +272,48 @@ class Okno extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-		
-	
-			
-
-			System.out.println(logFile.getSelectedItem());
-			System.out.println(blackListFile.getSelectedItem());
-			System.out.println(regExFile.getSelectedItem());
-			
 			JList<String> logList=getJListFromTabName(logFile.getSelectedItem().toString());
-			System.out.println(logFile.getSelectedItem().toString());
 			ListModel<String> listModel=logList.getModel();
 			
 			ArrayList<String> arrayListLog=new ArrayList<String>();
-			System.out.println("SIze: " + listModel.getSize());
 			for(int i=0; i<listModel.getSize(); i++)
 				arrayListLog.add(listModel.getElementAt(i));
-	
 			
 			JList<String> blackList=getJListFromTabName(blackListFile.getSelectedItem().toString());
-			System.out.println(logFile.getSelectedItem().toString());
 			ListModel<String> blackListModel=blackList.getModel();
 			
 			ArrayList<String> arrayListblackList=new ArrayList<String>();
-			System.out.println("SIze: " + listModel.getSize());
-			for(int i=0; i<blackListModel.getSize(); i++)
+			for(int i=0; i<blackListModel.getSize(); i++){
 				arrayListblackList.add(blackListModel.getElementAt(i));
+			}
 
-			JList<String> regExList=getJListFromTabName(blackListFile.getSelectedItem().toString());
-			System.out.println(logFile.getSelectedItem().toString());
+			JList<String> regExList=getJListFromTabName(regExFile.getSelectedItem().toString());
 			ListModel<String> regExListModel=regExList.getModel();
 			
 			ArrayList<String> arrayListregEx=new ArrayList<String>();
-			System.out.println("SIze: " + listModel.getSize());
 			for(int i=0; i<regExListModel.getSize(); i++)
 				arrayListregEx.add(regExListModel.getElementAt(i));
+			
+			ArrayList<String> filterredLog=new ArrayList<String>();
+				try {
+					filterredLog=LogFilter.filterWithRegExExpressions(LogFilter.filterWithBlackList(arrayListLog,arrayListblackList),arrayListregEx);
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+			
+			addJListTab("Result", filterredLog);
+			
+			try {
+				BufferedWriter logFileWriter = new BufferedWriter(new FileWriter("wynik.txt"));
+				for(String filtrred:filterredLog){
+					logFileWriter.write(filtrred);
+					logFileWriter.newLine();
+				}
+				logFileWriter.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 				
 		}
 		}
