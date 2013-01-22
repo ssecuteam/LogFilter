@@ -38,6 +38,10 @@ class Okno extends JFrame {
 	// declaration of components
 	private JPanel mainJPanel, menuJPanel, buttonJPanel;
 	private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+	
+	//private JList logList, blackList, regularList, filteredList, processList;
+	
+	
 	private JButton btnOpenLog, btnOpenBlack, btnOpenRegular, btnFilter;
 	private JScrollPane temp_scroll = new JScrollPane();
 	private JViewport temp_view = new JViewport();
@@ -117,6 +121,13 @@ class Okno extends JFrame {
 		btnOpenBlack.addActionListener(loadBtnActionListener);
 		btnOpenRegular.addActionListener(loadBtnActionListener);
 		btnFilter.addActionListener(filterBtnActionListener);
+		
+		//creating JLists
+//        logList = new JList(); // log list
+//        blackList = new JList(); // black list
+//        regularList = new JList(); // regular expressions list
+//        filteredList = new JList(); // results, filtered list
+//        processList = new JList(); // device processes list
 
 		// setting menu components
 		buttonJPanel.add(btnOpenLog);
@@ -128,7 +139,22 @@ class Okno extends JFrame {
 		buttonJPanel.add(btnFilter);
 		// setting up panels
 		menuJPanel.add(buttonJPanel);
-
+		
+		
+//		tabbedPane.addTab("Logcat LOG", null, new JScrollPane(logList), null);
+//		tabbedPane.setTabComponentAt(0, new ButtonTabComponent(tabbedPane));
+//		tabbedPane.addTab("Black List", null, new JScrollPane(blackList), null);
+//		tabbedPane.setTabComponentAt(1, new ButtonTabComponent(tabbedPane));
+//		tabbedPane.addTab("Regular List", null, new JScrollPane(regularList), null);
+//		tabbedPane.setTabComponentAt(2, new ButtonTabComponent(tabbedPane));
+//		tabbedPane.addTab("Filtered List", null, new JScrollPane(filteredList), null);
+//		tabbedPane.setTabComponentAt(3, new ButtonTabComponent(tabbedPane));
+		
+		
+		
+		
+		
+		
 		mainJPanel.add(menuJPanel, BorderLayout.WEST);
 		mainJPanel.add(tabbedPane, BorderLayout.CENTER);
 		getContentPane().add(mainJPanel);
@@ -138,57 +164,89 @@ class Okno extends JFrame {
 	}
 
 	// addJListTab method for adding JList tabs to tabbedPane
-	public JList<String> addJListTab(String tab_name, ArrayList<String> list) {
-		JList<String> temp_list=new JList(list.toArray());
-
-		Boolean new_tab = true;
-		if (tabbedPane.getComponentCount() > 0) {
-			int i = 0;
-			for (Component tab : tabbedPane.getComponents()) {
-				i++;
-				System.out.println(tabbedPane.getTitleAt(i - 1));
-				if (tabbedPane.getTitleAt(i - 1).equals(tab_name)) {
-					new_tab = false;
+		public JList<String> addJListTab(String tab_name, ArrayList<String> list) {
+			JList<String> temp_list=new JList(list.toArray());
+			Boolean new_tab = true;
+			//checking if there are any tab components
+				if (tabbedPane.getComponentCount() > 0) {
+					//if tab components >0
+					for (int i=0; i<tabbedPane.getComponentCount()-1; i++) {
+						//checking each component in tab pane
+						System.out.println(tabbedPane.getComponent(i).getName());
+						if(tabbedPane.getComponent(i).getClass().getName().equals("javax.swing.plaf.basic.BasicTabbedPaneUI$TabContainer")){
+							//if component is not tab label with button
+								if (tabbedPane.getTitleAt(i).equals(tab_name)) {
+									//if tab_name already existed - set temp_list as reference to this tab
+									temp_scroll = (JScrollPane) tabbedPane.getComponentAt(i);
+									temp_view = (JViewport) temp_scroll.getViewport();
+									temp_list = (JList<String>) temp_view.getComponent(0);
+									new_tab = false;
+								}		
+						}// end if tabbedPane.getComponent(i).getClass().getName().equals("javax.swing.plaf.basic.BasicTabbedPaneUI$TabContainer")
+								
+								
+								
+					}
+					if (new_tab){
+						//adding any later tab: tabbedPane.getComponentCount()-2 cause: index is from "0" and count is with new tab and label
+						tabbedPane.addTab(tab_name, null, new JScrollPane(temp_list), null);
+						tabbedPane.setTabComponentAt(tabbedPane.getComponentCount()-2, new ButtonTabComponent(tabbedPane));
+					}
+				} else {			
+					//adding first Tab
+					tabbedPane.addTab(tab_name, null, new JScrollPane(temp_list), null);			
+					tabbedPane.setTabComponentAt(tabbedPane.getComponentCount()-1, new ButtonTabComponent(tabbedPane));			
 				}
-			}
-			if (new_tab)
-				tabbedPane.addTab(tab_name, null, new JScrollPane(temp_list), null);
-		} else {
-			tabbedPane.addTab(tab_name, null, new JScrollPane(temp_list), null);
-		}
-	//	System.out.println(temp_list);
-		pack();
-		return temp_list;
-	}
+			pack();
+			return temp_list;
+		} //end of addJListTab
 
 	// getJListFromTabName returns JList object from tabbedPane
-	public JList<String> getJListFromTabName(String tabName) {
-		JList<String> temp_list = new JList<String>();
-		
-		if (tabbedPane.getComponentCount() > 0) {
-		//	System.out.println("ilosc komp: " +tabbedPane.getComponentCount());
-			for (int i = 1; i <= tabbedPane.getComponentCount(); i++) {
-				System.out.println("title: " +tabbedPane.getTitleAt(i - 1) + ", tabName: " + tabName);
-				if (tabbedPane.getTitleAt(i - 1) == tabName) {
-					temp_scroll = (JScrollPane) tabbedPane.getComponentAt(i - 1);
-					temp_view = (JViewport) temp_scroll.getViewport();
-					temp_list = (JList<String>) temp_view.getComponent(0);
-					return temp_list;
-				} else {
+		public JList getJListFromTabName(String tab_name) {
+			JList<String> temp_list=new JList();
+			//checking if there are any tab components
+				if (tabbedPane.getComponentCount() > 0) {
+					//if tab components >0
+					for (int i=0; i<tabbedPane.getComponentCount()-1; i++) {
+						//checking each component in tab pane
+						System.out.println(tabbedPane.getComponent(i).getName());
+						if(tabbedPane.getComponent(i).getClass().getName().equals("javax.swing.plaf.basic.BasicTabbedPaneUI$TabContainer")){
+							//if component is not tab label with button
+								if (tabbedPane.getTitleAt(i).equals(tab_name)) {
+									//if tab_name already existed - set temp_list as reference to this tab
+									temp_scroll = (JScrollPane) tabbedPane.getComponentAt(i);
+									temp_view = (JViewport) temp_scroll.getViewport();
+									temp_list = (JList<String>) temp_view.getComponent(0);
+								} else {
+									System.out.println("There's no such tab in tabbedPane");
+									temp_list = null;
+								}
+					}// end if tabbedPane.getComponent(i).getClass().getName().equals("javax.swing.plaf.basic.BasicTabbedPaneUI$TabContainer")
+					}//end of for
+
+				} else {			
 					System.out.println("There's no such tab in tabbedPane");
-					temp_list = null;
+					temp_list = null;		
 				}
-			}
-		} else {
-			System.out.println("There's no tabs in tabbedPane");
-			temp_list = null;
-		}
-		return temp_list;
+			pack();
+			return temp_list;
+				
 	}
 
 	class LoadBtnActionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent event) {
+			
+			
+			for (int i=0; i<tabbedPane.getComponentCount(); i++) {
+				
+				System.out.println(tabbedPane.getComponent(i).getClass().getName());
+			}
+			
+			
+			
+			
+			
 			System.out.println(getJListFromTabName("nowa"));
 			chooseFileDialog.setCurrentDirectory(new File("."));
 			int returnVal = chooseFileDialog.showOpenDialog((Component) event.getSource());
