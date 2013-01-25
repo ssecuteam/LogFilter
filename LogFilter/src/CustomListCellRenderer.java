@@ -24,3 +24,15 @@ public class CustomListCellRenderer extends JLabel implements ListCellRenderer {
         return this;
     }
 }
+
+//Simple, set a custom ListCellRenderer to your JList using:
+//list.setCellRenderer(myListCellrenderer);
+//
+//Now inside the overridden method getListCellRendererComponent() do something like this:
+//public Component getListCellRendererComponent(.....) {
+//    Component c = super.getListCellRendererComponent();
+//    c.setBackGround(Color.blue)
+//    return c;
+//}
+//
+//The above example assumed that your custom renderer overrid DefaultListCellRenderer
