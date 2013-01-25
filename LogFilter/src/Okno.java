@@ -137,13 +137,14 @@ class Okno extends JFrame{
 				super.setSelectedItem(anObject);
 			}
 		}
+		Dimension btnSize = new Dimension(145, 25);
 		
 		comboBoxLogFile=new JComboBox<String>(new cDefaultComboBoxModel());
 		comboBoxBlackListFile=new JComboBox<String>(new cDefaultComboBoxModel());
 		comboBoxRegExFile=new JComboBox<String>(new cDefaultComboBoxModel());
 		
 		// setting menu buttons size
-		Dimension btnSize = new Dimension(135, 25);
+		
 		btnOpenLog.setPreferredSize(btnSize);
 		btnOpenLog.setMinimumSize(btnSize);
 		btnOpenLog.setMaximumSize(btnSize);
@@ -293,6 +294,8 @@ class Okno extends JFrame{
 	// addJListTab method for adding JList tabs to tabbedPane
 		public JList<String> addJListTab(String tab_name, ArrayList<String> list) {
 	        JList<String> temp_list=new JList(list.toArray());
+	        //set JList Renderer
+	        temp_list.setCellRenderer(new CustomListCellRenderer());
 	        Boolean new_tab = true;
 	        int tabNumber=0;
 	        //checking if there are any tab components
